@@ -1,0 +1,99 @@
+openapi: 3.0.3
+info:
+  title: AI Thumbnail Hackathon API
+  description: |-
+    This is a minimal API for proving out the MVP of an app for the AI Thumbnail hackathon.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+servers:
+  - url: https://localhost:3000
+tags:
+  - name: image
+    description: Generated Images
+  - name: prompt
+    description: Generated or custom text Prompts
+paths:
+  /image/:imageId:
+    get:
+      tags:
+        - image
+      summary: Get Image by Id
+      description: Get Image by Id
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Image"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Image"
+        "404":
+          description: Image not found
+  /image/create:
+    post:
+      tags:
+        - image
+      summary: Generate Image(s) with a title and description
+      description: Generate Image(s) with a title and description
+      requestBody:
+        content:
+          application/json:
+            properties:
+              title:
+                type: string
+                example: This is example title text
+              description:
+                type: string
+                example: This is example description text
+        required: true
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Image"
+        "400":
+          description: Invalid prompt
+components:
+  schemas:
+    Image:
+      required:
+        - id
+        - originalTitle
+        - originalDescription
+        - description
+        - url
+        - status
+        - createdAt
+        - modifiedAt
+      type: object
+      properties:
+        description:
+          type: string
+          example: abcdef1234!#$
+        originalTitle:
+          type: string
+          example: abcdef1234!#$
+        originalDescription:
+          type: string
+          example: abcdef1234!#$
+        id:
+          type: string
+          example: abcdef1234!#$
+        url:
+          type: string
+          example: http://localhost:3000/foo.jpg
+        status:
+          type: string
+          example: pending
+        createdAt:
+          type: integer
+          format: int64
+        modifiedAt:
+          type: integer
+          format: int64
