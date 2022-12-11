@@ -140,7 +140,11 @@ export default function Home() {
           {!isSubmitting && (
             <span className="text-white flex flex-row">
               Generate
-              <img src="/carets.svg" className="ml-[12px]" />
+              <img
+                alt="right-facing carets"
+                src="/carets.svg"
+                className="ml-[12px]"
+              />
             </span>
           )}
 

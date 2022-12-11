@@ -131,6 +131,7 @@ export default function GeneratedImagePage({
                 href={url}
                 key={url}
                 target="_blank"
+                rel="noreferrer"
                 className="w-full p-1 hover:scale-150 transition-transform"
               >
                 <img
