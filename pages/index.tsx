@@ -47,10 +47,10 @@ export default function Home() {
 
             const { image } = await response.json();
 
-            console.log({ image });
+            const dasherizedTitle = encodeURIComponent(Case.kebab(image.title));
 
             if (image) {
-              router.push(`/images/${image.id}`);
+              router.push(`/images/${image.id}/${dasherizedTitle}`);
             }
           }
         }}

@@ -69,7 +69,8 @@ export default async function handler(
     if (isAjax) {
       res.json({ image });
     } else {
-      res.redirect(`/images/${jobId}`);
+      const dasherizedTitle = encodeURIComponent(Case.kebab(image.title));
+      res.redirect(`/images/${jobId}/${dasherizedTitle}`);
     }
   } catch (e: any) {
     if (isAjax) {

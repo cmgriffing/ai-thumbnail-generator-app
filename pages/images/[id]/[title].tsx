@@ -4,20 +4,29 @@ import { clsx } from "clsx";
 import { useRouter } from "next/router";
 import Case from "case";
 import { GetServerSidePropsContext } from "next";
-import { GeneratedImage, GeneratedImageStatus } from "../../types";
+import { GeneratedImage, GeneratedImageStatus } from "../../../types";
 import Link from "next/link";
 
 const scheme = process.env.NODE_ENV === "development" ? "http" : "https";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const imageId = context.query.id as string;
+  const titleInUrl = context.query.title as string;
 
   try {
     const imageResponse = await fetch(
       `${scheme}://${context.req.headers.host}/api/image/get/${imageId}`
     );
 
-    const { image } = await imageResponse.json();
+    const { image }: { image: GeneratedImage } = await imageResponse.json();
+
+    const dasherizedTitle = encodeURIComponent(Case.kebab(image.title));
+
+    if (dasherizedTitle !== titleInUrl) {
+      return {
+        redirect: `/images/${imageId}/${dasherizedTitle}`,
+      };
+    }
 
     if (image) {
       return { props: { image } };
