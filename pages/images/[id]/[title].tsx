@@ -119,6 +119,7 @@ export default function GeneratedImagePage({
             <div className="flex flex-row flex-wrap items-center justify-center">
               {fetchedImage.urls.map((url) => (
                 <img
+                  key={url}
                   src={url}
                   alt={fetchedImage.description}
                   className="h-20 w-20"
