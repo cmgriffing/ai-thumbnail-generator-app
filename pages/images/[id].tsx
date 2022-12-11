@@ -7,12 +7,14 @@ import { GetServerSidePropsContext } from "next";
 import { GeneratedImage, GeneratedImageStatus } from "../../types";
 import Link from "next/link";
 
+const scheme = process.env.NODE_ENV === "development" ? "http" : "https";
+
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const imageId = context.query.id as string;
 
   try {
     const imageResponse = await fetch(
-      `http://localhost:3000/api/image/${imageId}`
+      `${scheme}://${context.req.headers.host}/api/image/${imageId}`
     );
 
     const { image } = await imageResponse.json();
