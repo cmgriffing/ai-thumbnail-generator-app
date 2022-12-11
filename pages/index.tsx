@@ -29,9 +29,9 @@ export default function Home() {
         Generate Thumbnails
       </h1>
       <p>
-        Need a thumbnail for your YouTube video? You're in luck! Our humble AI
-        thumbnail farmers serve up fresh & engaging thumbnails on demand—give it
-        a go!
+        Need a thumbnail for your YouTube video? You&apos;re in luck! Our humble
+        AI thumbnail farmers serve up fresh & engaging thumbnails on demand—give
+        it a go!
       </p>
 
       <hr className="my-8 border-[#9a9a9a]" />

@@ -14,12 +14,12 @@ export function Header() {
         </span>
       </div>
       <div className="flex flex-1"></div>
-      <a
+      {/* <a
         href="/"
         className="uppercase px-[48px] py-[16px] border-2 border-[#008545] text-white custom-border-radius"
       >
         WTF is this?
-      </a>
+      </a> */}
     </header>
   );
 }
