@@ -14,12 +14,16 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   try {
     const imageResponse = await fetch(
-      `${scheme}://${context.req.headers.host}/api/image/${imageId}`
+      `${scheme}://${context.req.headers.host}/api/image/get/${imageId}`
     );
 
     const { image } = await imageResponse.json();
 
-    return { props: { image } };
+    if (image) {
+      return { props: { image } };
+    } else {
+      return { props: {} };
+    }
   } catch (e: any) {
     console.log({ e });
     return { props: {} };
@@ -36,7 +40,7 @@ export default function GeneratedImagePage({
   useEffect(() => {
     const interval = setInterval(async () => {
       if (image?.status === GeneratedImageStatus.Pending) {
-        const response = await fetch(`/api/image/${image.id}`);
+        const response = await fetch(`/api/image/get/${image.id}`);
         setFetchedImage(await response.json());
       }
     }, 30000);
@@ -48,7 +52,7 @@ export default function GeneratedImagePage({
 
   return (
     <div className="text-center">
-      {!image && (
+      {!fetchedImage && (
         <>
           <Head>
             <meta name="title" content="Image not found" />
@@ -60,11 +64,11 @@ export default function GeneratedImagePage({
         </>
       )}
 
-      {!!image && (
+      {!!fetchedImage && (
         <>
           <Head>
-            <meta name="title" content={image.title} />
-            <meta name="description" content={image.description} />
+            <meta name="title" content={fetchedImage.title} />
+            <meta name="description" content={fetchedImage.description} />
 
             <meta property="og:url" content="https://thumb.farm" />
             <meta property="og:type" content="website" />
@@ -72,25 +76,27 @@ export default function GeneratedImagePage({
               property="og:title"
               content="I just generated a YouTube Thumbnail using AI"
             />
-            <meta property="og:description" content={image.title} />
-            <meta property="og:image" content={image.url} />
+            <meta property="og:description" content={fetchedImage.title} />
+            <meta property="og:image" content={fetchedImage.urls[0]} />
 
             <meta name="twitter:card" content="summary_large_image" />
             <meta property="twitter:domain" content="thumb.farm" />
             <meta
               property="twitter:url"
-              content={`https://thumb.farm/images/${image.id}`}
+              content={`https://thumb.farm/images/${fetchedImage.id}`}
             />
             <meta
               name="twitter:title"
               content="I just generated a YouTube Thumbnail using AI"
             />
-            <meta name="twitter:description" content={image.title} />
-            <meta name="twitter:image" content={image.url} />
+            <meta name="twitter:description" content={fetchedImage.title} />
+            <meta name="twitter:image" content={fetchedImage.urls[0]} />
           </Head>
-          <h1 className="text-center text-4xl font-bold m-4">{image.title}</h1>
+          <h1 className="text-center text-4xl font-bold m-4">
+            {fetchedImage.title}
+          </h1>
 
-          {image.status === GeneratedImageStatus.Pending && (
+          {fetchedImage.status === GeneratedImageStatus.Pending && (
             <>
               <h2>
                 We are still generating the image. Give us a minute or two. If
@@ -100,10 +106,16 @@ export default function GeneratedImagePage({
             </>
           )}
 
-          {image.status === GeneratedImageStatus.Complete && (
-            <>
-              <img src={image.url} alt={image.description} />
-            </>
+          {fetchedImage.status === GeneratedImageStatus.Complete && (
+            <div className="flex flex-row flex-wrap items-center justify-center">
+              {fetchedImage.urls.map((url) => (
+                <img
+                  src={url}
+                  alt={fetchedImage.description}
+                  className="h-20 w-20"
+                />
+              ))}
+            </div>
           )}
         </>
       )}

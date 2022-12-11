@@ -7,7 +7,7 @@ export interface GeneratedImage {
   id: string;
   title: string;
   description: string;
-  url: string;
+  urls: string[];
   status: GeneratedImageStatus;
   createdAt: number;
   modifiedAt: number;
