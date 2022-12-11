@@ -129,11 +129,11 @@ export default function GeneratedImagePage({
             {fetchedImage.urls.map((url) => (
               <a
                 href={url}
+                key={url}
                 target="_blank"
                 className="w-full p-1 hover:scale-150 transition-transform"
               >
                 <img
-                  key={url}
                   src={url}
                   alt={fetchedImage.description}
                   className="w-full h-auto"
