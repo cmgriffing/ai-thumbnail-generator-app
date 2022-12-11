@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { clsx } from "clsx";
 import { useRouter } from "next/router";
 import Case from "case";
+import { Loader } from "../components/Loader";
 
 export default function Home() {
   const router = useRouter();
@@ -43,6 +44,7 @@ export default function Home() {
         onSubmit={async (event) => {
           event.preventDefault();
           if (!formIsInvalid) {
+            setIsSubmitting(true);
             // send request to backend
             const response = await fetch("/api/image/create", {
               method: "POST",
@@ -142,7 +144,14 @@ export default function Home() {
             </span>
           )}
 
-          {isSubmitting && <span className="text-white">Submitting...</span>}
+          {isSubmitting && (
+            <span className="text-white">
+              Submitting{" "}
+              <span>
+                <Loader small={true} />
+              </span>
+            </span>
+          )}
         </button>
       </form>
     </>

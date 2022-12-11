@@ -6,6 +6,7 @@ import Case from "case";
 import { GetServerSidePropsContext } from "next";
 import { GeneratedImage, GeneratedImageStatus } from "../../../types";
 import Link from "next/link";
+import { Loader } from "../../../components/Loader";
 
 const scheme = process.env.NODE_ENV === "development" ? "http" : "https";
 
@@ -56,7 +57,7 @@ export default function GeneratedImagePage({
           console.log("Error fetching image:", e);
         }
       }
-    }, 30000);
+    }, 15000);
 
     return () => {
       clearInterval(interval);
@@ -105,30 +106,45 @@ export default function GeneratedImagePage({
             <meta name="twitter:description" content={fetchedImage.title} />
             <meta name="twitter:image" content={fetchedImage.urls[0]} />
           </Head>
-          <h1 className="text-center text-4xl font-bold m-4">
+          <h1 className="text-[32px] leading-[43px] font-bold mb-2">
             {fetchedImage.title}
           </h1>
 
           {fetchedImage.status === GeneratedImageStatus.Processing && (
             <>
               <h2>
-                We are still generating the image. Give us a minute or two. If
-                the page has not updated within that time, please try refreshing
-                the page.
+                We are still generating the images. Just give us a moment or
+                two.
               </h2>
+              <noscript>
+                <p>
+                  JavaScript is off so you will need to refresh the page to see
+                  the updates.
+                </p>
+              </noscript>
             </>
           )}
 
-          {fetchedImage.status === GeneratedImageStatus.Done && (
-            <div className="flex flex-row flex-wrap items-center justify-center">
-              {fetchedImage.urls.map((url) => (
+          <div className="flex flex-row flex-wrap items-center justify-center">
+            {fetchedImage.urls.map((url) => (
+              <a
+                href={url}
+                target="_blank"
+                className="w-full p-1 hover:scale-150 transition-transform"
+              >
                 <img
                   key={url}
                   src={url}
                   alt={fetchedImage.description}
-                  className="h-20 w-20"
+                  className="w-full h-auto"
                 />
-              ))}
+              </a>
+            ))}
+          </div>
+
+          {fetchedImage.status === GeneratedImageStatus.Processing && (
+            <div>
+              <Loader small={false} />
             </div>
           )}
         </>
