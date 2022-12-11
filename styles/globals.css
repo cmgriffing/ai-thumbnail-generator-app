@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background: radial-gradient(
+        101.11% 198.78% at 95.14% 71.23%,
+        rgba(57, 222, 254, 0.16) 0%,
+        rgba(0, 0, 0, 0) 100%
+      )
+      /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+    linear-gradient(
+      145.69deg,
+      rgba(250, 59, 199, 0.16) 30.31%,
+      rgba(0, 0, 0, 0) 89.08%
+    ),
+    radial-gradient(
+        66.21% 80.55% at 13.68% 79.84%,
+        rgba(184, 134, 255, 0.16) 0%,
+        rgba(0, 0, 0, 0) 100%
+      )
+      /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */,
+    #0d0d0d;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: white;
+}
+
+*,
+.label-text,
+.label-text-alt {
+  color: #9a9a9a;
+}
+
+.custom-border {
+  border: 2px solid rgba(255, 255, 255, 0.16);
+}
+
+.custom-border-radius {
+  border-radius: 8px;
+}
+
+.header {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.16);
+}

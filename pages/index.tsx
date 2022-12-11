@@ -9,6 +9,7 @@ export default function Home() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [formIsInvalid, setFormIsInvalid] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     setFormIsInvalid(
@@ -24,10 +25,19 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1 className="text-center">AI Thumbnail Generator</h1>
+      <h1 className="text-[32px] leading-[43px] font-bold mb-2">
+        Generate Thumbnails
+      </h1>
+      <p>
+        Need a thumbnail for your YouTube video? You're in luck! Our humble AI
+        thumbnail farmers serve up fresh & engaging thumbnails on demand—give it
+        a go!
+      </p>
+
+      <hr className="my-8 border-[#9a9a9a]" />
 
       <form
-        className="w-[400px] mx-auto mb-4"
+        className="w-full mx-auto mb-4"
         method="POST"
         action="/api/create"
         onSubmit={async (event) => {
@@ -55,52 +65,84 @@ export default function Home() {
           }
         }}
       >
-        <div className="form-control w-full">
-          <label className="label">
+        <div className="form-control w-full mb-4">
+          <h2 className="mb-2 font-bold text-2xl">Title</h2>
+          <label className="mb-4">
             <span className="label-text">What is the title of the video?</span>
           </label>
           <input
             type="text"
             value={title}
-            placeholder="Type here"
-            className="input input-bordered w-full"
+            placeholder="How I made the best banana cake ever!"
+            className="input input-bordered w-full bg-transparent custom-border custom-border-radius"
             onInput={(event) => {
               setTitle(event.currentTarget.value);
             }}
           />
+          <div className="text-right">
+            <span className="label-text-alt">
+              <span
+                className={clsx(
+                  {
+                    "text-red": title.length > 100,
+                  },
+                  "mr-2",
+                  "label-text-alt"
+                )}
+              >
+                {title.length}
+              </span>
+              / 100
+            </span>
+          </div>
         </div>
         <div className="form-control mb-4">
-          <label className="label">
+          <h2 className="mb-2 font-bold text-2xl">Description</h2>
+          <label className="mb-4">
             <span className="label-text">
               Description of contents in desired thumbnail
             </span>
-
+          </label>
+          <textarea
+            value={description}
+            className="textarea textarea-bordered h-24 bg-transparent custom-border custom-border-radius"
+            placeholder="A Mr Beast style thumbnail with a large sack of potatoes in the top left corner..."
+            onInput={(event) => {
+              setDescription(event.currentTarget.value);
+            }}
+          ></textarea>
+          <div className="text-right">
             <span className="label-text-alt">
               <span
                 className={clsx(
                   {
                     "text-red": description.length > 1000,
                   },
-                  "mr-2"
+                  "mr-2",
+                  "label-text-alt"
                 )}
               >
                 {description.length}
               </span>
               / 1000
             </span>
-          </label>
-          <textarea
-            value={description}
-            className="textarea textarea-bordered h-24"
-            placeholder="Bio"
-            onInput={(event) => {
-              setDescription(event.currentTarget.value);
-            }}
-          ></textarea>
+          </div>
         </div>
 
-        <button className="btn btn-primary w-full" disabled={formIsInvalid}>
-          Submit
+        <button
+          className={clsx("btn btn-success w-full", {
+            "pointer-events-none": isSubmitting || formIsInvalid,
+            "opacity-50": isSubmitting || formIsInvalid,
+          })}
+        >
+          {!isSubmitting && (
+            <span className="text-white flex flex-row">
+              Generate
+              <img src="/carets.svg" className="ml-[12px]" />
+            </span>
+          )}
+
+          {isSubmitting && <span className="text-white">Submitting...</span>}
         </button>
       </form>
     </>

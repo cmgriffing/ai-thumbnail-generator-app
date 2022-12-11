@@ -49,8 +49,12 @@ export default function GeneratedImagePage({
   useEffect(() => {
     const interval = setInterval(async () => {
       if (image?.status === GeneratedImageStatus.Pending) {
-        const response = await fetch(`/api/image/get/${image.id}`);
-        setFetchedImage(await response.json());
+        try {
+          const response = await fetch(`/api/image/get/${image.id}`);
+          setFetchedImage((await response.json()).image);
+        } catch (e) {
+          console.log("Error fetching image:", e);
+        }
       }
     }, 30000);
 
