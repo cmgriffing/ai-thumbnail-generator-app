@@ -1,6 +1,6 @@
 export enum GeneratedImageStatus {
-  Pending = "pending",
-  Complete = "complete",
+  Processing = "processing",
+  Done = "done",
 }
 
 export interface GeneratedImage {

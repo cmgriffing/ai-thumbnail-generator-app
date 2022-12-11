@@ -5,6 +5,7 @@ import { MongoClient } from "mongodb";
 const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASS;
 const DB_HOST = process.env.DB_HOST;
+const JOB_TRACKER_HOST = process.env.JOB_TRACKER_HOST;
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,12 +20,31 @@ export default async function handler(
     const image = await dbClient.db("db").collection("images").findOne({ id });
 
     if (!image) {
-      res.json({ image: undefined });
-    } else {
-      res.json({ image });
+      res.status(404);
+      res.end();
+      return;
     }
+
+    const imageStatusResponse = await fetch(
+      `https://${JOB_TRACKER_HOST}/api/jobs/${id}`
+    );
+    const json = await imageStatusResponse.json();
+    const { status, urls }: { status: GeneratedImageStatus; urls: string[] } =
+      json; // {status: processing or done, urls: string[]}
+
+    console.log("JSON", json, id);
+
+    res.json({
+      image: {
+        ...image,
+        urls,
+        status,
+      },
+    });
   } catch (e: any) {
-    res.send(500);
+    res.status(500);
+    res.end();
+    console.log("Error in getter", e);
   } finally {
     await dbClient.close();
   }

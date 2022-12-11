@@ -48,7 +48,7 @@ export default function GeneratedImagePage({
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      if (image?.status === GeneratedImageStatus.Pending) {
+      if (image?.status === GeneratedImageStatus.Processing) {
         try {
           const response = await fetch(`/api/image/get/${image.id}`);
           setFetchedImage((await response.json()).image);
@@ -109,7 +109,7 @@ export default function GeneratedImagePage({
             {fetchedImage.title}
           </h1>
 
-          {fetchedImage.status === GeneratedImageStatus.Pending && (
+          {fetchedImage.status === GeneratedImageStatus.Processing && (
             <>
               <h2>
                 We are still generating the image. Give us a minute or two. If
@@ -119,7 +119,7 @@ export default function GeneratedImagePage({
             </>
           )}
 
-          {fetchedImage.status === GeneratedImageStatus.Complete && (
+          {fetchedImage.status === GeneratedImageStatus.Done && (
             <div className="flex flex-row flex-wrap items-center justify-center">
               {fetchedImage.urls.map((url) => (
                 <img

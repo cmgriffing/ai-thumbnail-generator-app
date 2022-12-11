@@ -26,12 +26,14 @@ export default async function handler(
     const apiKeyInHeader = req.headers["X-API-KEY"];
 
     if (apiKeyInHeader !== API_KEY) {
-      res.send(401);
+      res.status(401);
+      res.end();
       return;
     }
 
     if (!req.body.urls) {
-      res.send(400);
+      res.status(400);
+      res.end();
       return;
     }
 
@@ -39,7 +41,7 @@ export default async function handler(
       { id },
       {
         urls: req.body.urls,
-        status: GeneratedImageStatus.Complete,
+        status: GeneratedImageStatus.Done,
         modifiedAt: Date.now(),
       }
     );
@@ -52,7 +54,8 @@ export default async function handler(
       res.json({ image });
     }
   } catch (e: any) {
-    res.send(500);
+    res.status(500);
+    res.end();
   } finally {
     await dbClient.close();
   }

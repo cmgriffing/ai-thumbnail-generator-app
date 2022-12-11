@@ -2,10 +2,12 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { GeneratedImage, GeneratedImageStatus } from "../../../types";
 import Case from "case";
 import { MongoClient } from "mongodb";
+import { nanoid } from "../../../nanoid";
 
 const DB_USER = process.env.DB_USER;
 const DB_PASS = process.env.DB_PASS;
 const DB_HOST = process.env.DB_HOST;
+const JOB_TRACKER_HOST = process.env.JOB_TRACKER_HOST;
 
 interface CreateImageRequest extends NextApiRequest {
   body: {
@@ -13,6 +15,10 @@ interface CreateImageRequest extends NextApiRequest {
     description: string;
   };
 }
+
+// /jobs/create, title, description, count: 10, id POST
+
+// /jobs/{jobId} GET
 
 export default async function handler(
   req: CreateImageRequest,
@@ -27,9 +33,7 @@ export default async function handler(
   const isAjax = contentType === "application/json";
 
   try {
-    // TODO: hit Rox's API
-    // get real jobId
-    const jobId = Date.now().toString();
+    const jobId = nanoid();
 
     const { title, description } = req.body;
 
@@ -45,18 +49,36 @@ export default async function handler(
     const queryString = searchParams.toString();
     if (queryString !== "") {
       if (isAjax) {
-        res.send(400);
+        res.status(400);
+        res.end();
       } else {
         res.redirect(`/?${queryString}`);
       }
       return;
     }
 
+    const body = JSON.stringify({ id: jobId, title, description, count: 3 });
+
+    console.log({ body });
+
+    const createResponse = await fetch(
+      `https://${JOB_TRACKER_HOST}/api/jobs/create`,
+      {
+        method: "POST",
+        body,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("response", await createResponse.json());
+
     const now = Date.now();
 
     const image: GeneratedImage = {
       id: jobId,
-      status: GeneratedImageStatus.Pending,
+      status: GeneratedImageStatus.Processing,
       title,
       description,
       createdAt: now,
@@ -67,14 +89,16 @@ export default async function handler(
     await dbClient.db("db").collection("images").insertOne(image);
 
     if (isAjax) {
-      res.json({ image });
+      res.json({ image: { ...image, urls: [] } });
     } else {
       const dasherizedTitle = encodeURIComponent(Case.kebab(image.title));
       res.redirect(`/images/${jobId}/${dasherizedTitle}`);
     }
   } catch (e: any) {
     if (isAjax) {
-      res.send(500);
+      console.log("Error creating image", e);
+      res.status(500);
+      res.end();
     } else {
       res.redirect(`/server-error`);
     }
